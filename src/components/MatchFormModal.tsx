@@ -106,7 +106,9 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
   const [photoError, setPhotoError] = useState<string>('');
 
   const initialFileInputRef = useRef<HTMLInputElement | null>(null);
+  const initialGalleryInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
 
   // Initialize or reset form when modal opens or edit match changes
   useEffect(() => {
@@ -242,6 +244,9 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
     if (initialFileInputRef.current) {
       initialFileInputRef.current.value = '';
     }
+    if (initialGalleryInputRef.current) {
+      initialGalleryInputRef.current.value = '';
+    }
   };
 
   // Image Upload handler for Final Board Photo
@@ -360,6 +365,9 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
     setPhotoError('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+    if (galleryInputRef.current) {
+      galleryInputRef.current.value = '';
     }
   };
 
@@ -569,6 +577,7 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
                   </p>
                 </div>
               </div>
+              {/* Input Câmera Direta */}
               <input
                 ref={initialFileInputRef}
                 type="file"
@@ -577,19 +586,53 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
                 onChange={handleInitialPhotoSelect}
                 className="hidden"
               />
+              {/* Input Galeria / Arquivos */}
+              <input
+                ref={initialGalleryInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleInitialPhotoSelect}
+                className="hidden"
+              />
             </div>
 
             {!initialBoardPhoto ? (
-              <div
-                onClick={() => initialFileInputRef.current?.click()}
-                className="border border-dashed border-stone-800 hover:border-emerald-500/60 hover:bg-emerald-950/20 rounded-xl p-3.5 text-center cursor-pointer transition-all flex items-center justify-center gap-2.5 group"
-              >
-                <div className="w-8 h-8 rounded-full bg-stone-800/80 group-hover:bg-emerald-500/20 flex items-center justify-center text-stone-400 group-hover:text-emerald-300 transition-colors">
-                  <Camera size={17} />
-                </div>
-                <div className="text-xs font-semibold text-stone-300 group-hover:text-emerald-200">
-                  Adicionar foto do tabuleiro inicial (Setup de partida)
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => initialGalleryInputRef.current?.click()}
+                  className="border border-stone-800 hover:border-emerald-500/70 bg-stone-900/60 hover:bg-emerald-950/30 rounded-xl p-3 text-left transition-all flex items-center gap-2.5 group cursor-pointer"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-stone-800/80 group-hover:bg-emerald-500/20 flex items-center justify-center text-stone-300 group-hover:text-emerald-300 transition-colors shrink-0">
+                    <ImageIcon size={16} />
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-stone-200 group-hover:text-emerald-200">
+                      Escolher da Galeria
+                    </div>
+                    <div className="text-[10px] text-stone-400">
+                      Fotos do rolo da câmera
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => initialFileInputRef.current?.click()}
+                  className="border border-stone-800 hover:border-emerald-500/70 bg-stone-900/60 hover:bg-emerald-950/30 rounded-xl p-3 text-left transition-all flex items-center gap-2.5 group cursor-pointer"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-stone-800/80 group-hover:bg-emerald-500/20 flex items-center justify-center text-stone-300 group-hover:text-emerald-300 transition-colors shrink-0">
+                    <Camera size={16} />
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-stone-200 group-hover:text-emerald-200">
+                      Tirar Foto com a Câmera
+                    </div>
+                    <div className="text-[10px] text-stone-400">
+                      Abrir câmera agora
+                    </div>
+                  </div>
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-3 bg-stone-900 border border-emerald-900/40 rounded-xl p-2.5">
@@ -621,10 +664,17 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     type="button"
+                    onClick={() => initialGalleryInputRef.current?.click()}
+                    className="text-[11px] text-stone-300 hover:text-white px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 transition-colors"
+                  >
+                    Galeria
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => initialFileInputRef.current?.click()}
                     className="text-[11px] text-stone-300 hover:text-white px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 transition-colors"
                   >
-                    Trocar
+                    Câmera
                   </button>
                   <button
                     type="button"
@@ -654,11 +704,20 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
                   </p>
                 </div>
               </div>
+              {/* Input Câmera Direta */}
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
+                onChange={handlePhotoSelect}
+                className="hidden"
+              />
+              {/* Input Galeria / Rolo de fotos */}
+              <input
+                ref={galleryInputRef}
+                type="file"
+                accept="image/*"
                 onChange={handlePhotoSelect}
                 className="hidden"
               />
@@ -672,21 +731,40 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
               </div>
             )}
 
-            {/* No photo yet: Action button */}
+            {/* No photo yet: Action buttons for Gallery and Camera */}
             {!boardPhoto ? (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-stone-700 hover:border-amber-400/80 hover:bg-stone-800/40 rounded-xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
-              >
-                <div className="w-11 h-11 rounded-full bg-stone-800 group-hover:bg-amber-500/20 flex items-center justify-center text-stone-400 group-hover:text-amber-300 transition-colors">
-                  <Camera size={22} />
-                </div>
-                <div className="text-xs font-semibold text-stone-200 group-hover:text-amber-200">
-                  Tirar foto do tabuleiro ou escolher da galeria
-                </div>
-                <p className="text-[11px] text-stone-400 max-w-sm">
-                  A foto ficará gravada no registro da partida e a IA contará aldeias, cidades e pontos automaticamente.
-                </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="border-2 border-dashed border-stone-700 hover:border-amber-400/90 bg-stone-900/70 hover:bg-amber-950/30 rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-stone-800 group-hover:bg-amber-500/20 flex items-center justify-center text-stone-300 group-hover:text-amber-300 transition-colors">
+                    <ImageIcon size={20} />
+                  </div>
+                  <div className="text-xs font-bold text-stone-100 group-hover:text-amber-200">
+                    Escolher da Galeria
+                  </div>
+                  <p className="text-[10px] text-stone-400">
+                    Selecione uma foto já tirada no rolo de câmera
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-stone-700 hover:border-amber-400/90 bg-stone-900/70 hover:bg-amber-950/30 rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-stone-800 group-hover:bg-amber-500/20 flex items-center justify-center text-stone-300 group-hover:text-amber-300 transition-colors">
+                    <Camera size={20} />
+                  </div>
+                  <div className="text-xs font-bold text-stone-100 group-hover:text-amber-200">
+                    Tirar Foto Agora (Câmera)
+                  </div>
+                  <p className="text-[10px] text-stone-400">
+                    Abra a câmera do celular para fotografar a mesa
+                  </p>
+                </button>
               </div>
             ) : (
               /* Photo is uploaded: Preview + Controls */
@@ -713,13 +791,20 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
                       <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
                         <CheckCircle2 size={14} /> Foto Registrada com Sucesso
                       </span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => galleryInputRef.current?.click()}
+                          className="text-[11px] text-stone-300 hover:text-white px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 transition-colors"
+                        >
+                          Galeria
+                        </button>
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           className="text-[11px] text-stone-300 hover:text-white px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 transition-colors"
                         >
-                          Trocar foto
+                          Câmera
                         </button>
                         <button
                           type="button"
