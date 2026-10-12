@@ -1,6 +1,7 @@
 import React from 'react';
 import { CatanHexIcon } from './CatanHexIcon';
-import { Plus, Share2, HelpCircle } from 'lucide-react';
+import { Plus, Share2, HelpCircle, Sun, Moon, ShieldCheck } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export type NavigationTab =
   | 'leaderboard'
@@ -16,6 +17,7 @@ interface HeaderProps {
   onTabChange: (tab: NavigationTab) => void;
   onOpenMatchModal: () => void;
   onOpenShareModal: () => void;
+  onOpenDataSafetyModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,7 +25,10 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   onOpenMatchModal,
   onOpenShareModal,
+  onOpenDataSafetyModal,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <header className="sticky top-0 z-30 bg-stone-900 text-stone-100 border-b border-stone-800 shadow-sm backdrop-blur-md bg-stone-900/95">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-6">
@@ -117,6 +122,26 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Zone 3: Actions */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Theme Toggle Button (Dark / Light) */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-lg transition-colors whitespace-nowrap min-h-[40px] min-w-[40px] justify-center"
+            title={theme === 'dark' ? 'Mudar para Modo Claro (Pergaminho)' : 'Mudar para Modo Escuro (Taberna)'}
+            aria-label="Alternar tema claro e escuro"
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun size={16} className="text-amber-400 stroke-[2.2]" />
+                <span className="hidden sm:inline text-stone-300">Claro</span>
+              </>
+            ) : (
+              <>
+                <Moon size={16} className="text-amber-600 stroke-[2.2]" />
+                <span className="hidden sm:inline text-stone-700">Escuro</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={() => onTabChange('glossary')}
             className="lg:hidden p-2 text-stone-300 hover:text-amber-400 bg-stone-800 rounded-lg min-h-[40px] min-w-[40px] flex items-center justify-center"
@@ -124,6 +149,17 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <HelpCircle size={17} className="text-amber-400" />
           </button>
+
+          {onOpenDataSafetyModal && (
+            <button
+              onClick={onOpenDataSafetyModal}
+              className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-lg transition-colors whitespace-nowrap min-h-[40px]"
+              title="Segurança dos Dados & Backup para GitHub"
+            >
+              <ShieldCheck size={16} className="text-emerald-400" />
+              <span className="hidden md:inline">Backup</span>
+            </button>
+          )}
 
           <button
             onClick={onOpenShareModal}

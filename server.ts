@@ -6,6 +6,7 @@ import { GoogleGenAI } from '@google/genai';
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 const DATA_DIR = path.resolve(process.cwd(), 'data');
+const BACKUP_DIR = path.resolve(DATA_DIR, 'backups');
 const DATA_FILE = path.resolve(DATA_DIR, 'catan_matches.json');
 const DEFAULT_DATA_FILE = path.resolve(DATA_DIR, 'default_matches.json');
 
@@ -38,6 +39,9 @@ function getMatches(): any[] {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
+    if (!fs.existsSync(BACKUP_DIR)) {
+      fs.mkdirSync(BACKUP_DIR, { recursive: true });
+    }
     if (!fs.existsSync(DATA_FILE)) {
       const defaults = getDefaultMatches();
       fs.writeFileSync(DATA_FILE, JSON.stringify(defaults, null, 2), 'utf-8');
@@ -56,11 +60,28 @@ function saveMatches(matches: any[]): boolean {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-    // Create an automatic timestamped backup if existing file has data
-    if (fs.existsSync(DATA_FILE)) {
-      const backupFile = path.resolve(DATA_DIR, 'catan_matches_backup.json');
-      fs.copyFileSync(DATA_FILE, backupFile);
+    if (!fs.existsSync(BACKUP_DIR)) {
+      fs.mkdirSync(BACKUP_DIR, { recursive: true });
     }
+
+    // Automated rolling backups: if existing file has matches, preserve it before modifying
+    if (fs.existsSync(DATA_FILE)) {
+      try {
+        const existingRaw = fs.readFileSync(DATA_FILE, 'utf-8');
+        const existing = JSON.parse(existingRaw);
+        if (Array.isArray(existing) && existing.length > 0) {
+          const backupLatest = path.resolve(BACKUP_DIR, 'catan_matches_backup_latest.json');
+          fs.writeFileSync(backupLatest, existingRaw, 'utf-8');
+
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+          const backupTimed = path.resolve(BACKUP_DIR, `catan_matches_backup_${timestamp}.json`);
+          fs.writeFileSync(backupTimed, existingRaw, 'utf-8');
+        }
+      } catch (bErr) {
+        console.warn('Backup warning:', bErr);
+      }
+    }
+
     fs.writeFileSync(DATA_FILE, JSON.stringify(matches, null, 2), 'utf-8');
     return true;
   } catch (err) {
@@ -288,6 +309,30 @@ app.get('/api/export/csv', (_req, res) => {
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', 'attachment; filename="torneio_catan_4_estacoes.csv"');
   res.send('\uFEFF' + rows.join('\r\n'));
+});
+
+// JSON Backup Download Endpoint
+app.get('/api/backup/download', (_req, res) => {
+  const matches = getMatches();
+  const timestamp = new Date().toISOString().slice(0, 10);
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="catan_matches_backup_${timestamp}.json"`);
+  res.send(JSON.stringify(matches, null, 2));
+});
+
+// Backup Status & Recovery Info Endpoint
+app.get('/api/backup/status', (_req, res) => {
+  const matches = getMatches();
+  let backupsCount = 0;
+  if (fs.existsSync(BACKUP_DIR)) {
+    backupsCount = fs.readdirSync(BACKUP_DIR).filter(f => f.endsWith('.json')).length;
+  }
+  res.json({
+    totalMatches: matches.length,
+    dataFileExists: fs.existsSync(DATA_FILE),
+    backupsCount,
+    lastBackupAvailable: fs.existsSync(path.resolve(BACKUP_DIR, 'catan_matches_backup_latest.json')),
+  });
 });
 
 async function startServer() {

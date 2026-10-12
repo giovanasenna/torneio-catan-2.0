@@ -292,6 +292,41 @@ def calculate_annual_circuit(df, ano_temporada: int = 2026):
 # -----------------------------------------------------------------------------
 df = load_data()
 
+# Seletor de Tema no Sidebar do Streamlit
+st.sidebar.title("🎲 Menu & Configurações")
+st.sidebar.markdown("**Torneio 4 Estações de Catan**")
+tema_visual = st.sidebar.radio(
+    "🎨 Modo de Exibição:",
+    ["🌙 Modo Escuro (Taberna)", "☀️ Modo Claro (Pergaminho)"],
+    index=0
+)
+
+if "Modo Claro" in tema_visual:
+    st.markdown("""
+        <style>
+        .stApp {
+            background-color: #F8F6F0;
+            color: #1C1917;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #F1EDE3;
+        }
+        .stMarkdown, p, span, label, [data-testid="stWidgetLabel"] {
+            color: #1C1917 !important;
+        }
+        h1, h2, h3, h4 {
+            color: #78350F !important;
+        }
+        .stTabs [data-baseweb="tab"] {
+            color: #44403C !important;
+        }
+        .stTabs [aria-selected="true"] {
+            color: #B45309 !important;
+            border-bottom-color: #B45309 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
 st.title("🎲 Torneio das 4 Estações de Catan")
 st.markdown("Circuito Anual 2026 • **Edição Atual: Primavera** • Winter S1 Encerrado")
 

@@ -5,6 +5,7 @@
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background-color: #0c0a09;
     color: #f5f5f4;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   h1, h2, h3, .font-serif {
@@ -25,3 +26,200 @@
 .animate-fade-in {
   animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ==========================================================================
+   LIGHT MODE PALETTE - CATAN WARM PARCHMENT & BOARD GAME ELEGANCE
+   ========================================================================== */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f8f6f0 !important;
+  color: #1c1917 !important;
+}
+
+/* Base Surfaces & Cards */
+html.light .bg-stone-950 {
+  background-color: #f8f6f0 !important;
+}
+
+html.light .bg-stone-900 {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+html.light .bg-stone-850,
+html.light .bg-stone-800 {
+  background-color: #f1ede3 !important;
+}
+
+html.light [class*="bg-stone-900/"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html.light [class*="bg-stone-950/"] {
+  background-color: rgba(248, 246, 240, 0.92) !important;
+}
+
+html.light [class*="bg-stone-800/"] {
+  background-color: rgba(241, 237, 227, 0.85) !important;
+}
+
+/* Borders */
+html.light .border-stone-800,
+html.light .border-stone-700,
+html.light [class*="border-stone-800/"],
+html.light [class*="border-stone-700/"] {
+  border-color: #e5e0d3 !important;
+}
+
+/* Typography Contrast */
+html.light .text-stone-100 {
+  color: #1c1917 !important;
+}
+
+html.light .text-stone-200 {
+  color: #292524 !important;
+}
+
+html.light .text-stone-300 {
+  color: #44403c !important;
+}
+
+html.light .text-stone-400 {
+  color: #6b665f !important;
+}
+
+html.light .text-stone-500 {
+  color: #8c857b !important;
+}
+
+/* Amber Accents in Light Mode */
+html.light .text-amber-100 {
+  color: #78350f !important;
+}
+
+html.light .text-amber-200 {
+  color: #92400e !important;
+}
+
+html.light .text-amber-300 {
+  color: #b45309 !important;
+}
+
+html.light .text-amber-400 {
+  color: #b45309 !important;
+}
+
+html.light [class*="bg-amber-950"] {
+  background-color: #fef3c7 !important;
+}
+
+html.light [class*="border-amber-800"],
+html.light [class*="border-amber-900"] {
+  border-color: #fcd34d !important;
+}
+
+html.light [class*="text-amber-300"] {
+  color: #b45309 !important;
+}
+
+/* Status Badges */
+html.light [class*="bg-emerald-950"] {
+  background-color: #ecfdf5 !important;
+}
+html.light [class*="text-emerald-300"],
+html.light [class*="text-emerald-400"] {
+  color: #047857 !important;
+}
+html.light [class*="border-emerald-800"],
+html.light [class*="border-emerald-950"] {
+  border-color: #a7f3d0 !important;
+}
+
+html.light [class*="bg-blue-950"] {
+  background-color: #eff6ff !important;
+}
+html.light [class*="text-blue-200"],
+html.light [class*="text-blue-300"],
+html.light [class*="text-blue-400"] {
+  color: #1d4ed8 !important;
+}
+html.light [class*="border-blue-800"],
+html.light [class*="border-blue-900"] {
+  border-color: #bfdbfe !important;
+}
+
+html.light [class*="bg-red-950"] {
+  background-color: #fef2f2 !important;
+}
+html.light [class*="text-red-200"],
+html.light [class*="text-red-300"],
+html.light [class*="text-red-400"] {
+  color: #b91c1c !important;
+}
+html.light [class*="border-red-800"] {
+  border-color: #fecaca !important;
+}
+
+/* Inputs, Selects & Forms */
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  color: #1c1917 !important;
+  border-color: #d8d3c5 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #9c9589 !important;
+}
+
+html.light select option {
+  background-color: #ffffff !important;
+  color: #1c1917 !important;
+}
+
+/* Interactive States */
+html.light [class*="hover:bg-stone-800"]:hover {
+  background-color: #e8e3d6 !important;
+}
+
+html.light [class*="hover:bg-stone-700"]:hover {
+  background-color: #ded8cb !important;
+}
+
+html.light [class*="hover:text-stone-100"]:hover {
+  color: #0c0a09 !important;
+}
+
+html.light [class*="hover:text-stone-200"]:hover {
+  color: #1c1917 !important;
+}
+
+/* SVG Chart Grids & Markers */
+html.light svg line[stroke="#292524"] {
+  stroke: #e5e0d3 !important;
+}
+
+html.light svg text[fill="#78716C"] {
+  fill: #78716c !important;
+}
+
+html.light svg circle[fill="#1C1917"] {
+  fill: #ffffff !important;
+}
+
+/* Selection */
+html.light ::selection {
+  background-color: #fbbf24 !important;
+  color: #1c1917 !important;
+}
+
+/* Modal Backdrops maintain focus */
+html.light .bg-stone-950\/80 {
+  background-color: rgba(28, 25, 23, 0.65) !important;
+}
+

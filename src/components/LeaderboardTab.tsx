@@ -32,8 +32,13 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg sm:text-2xl font-bold font-serif text-amber-100">
-                Classificação da Estação
+                {selectedSeason === 'all' ? 'Circuito Anual (Geral)' : 'Classificação da Estação'}
               </h1>
+              {selectedSeason === 'all' && (
+                <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                  🏆 Circuito Anual (Consolidado)
+                </span>
+              )}
               {selectedSeason === CURRENT_SEASON && (
                 <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
                   Primavera (Ativa)
@@ -46,9 +51,11 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
               )}
             </div>
             <p className="text-xs sm:text-sm text-stone-400 mt-0.5">
-              {selectedSeason === 'Inverno'
+              {selectedSeason === 'all'
+                ? `Pontuação Anual Contínua: 15 partidas do Inverno (base) + ${matches.length} partidas das demais estações.`
+                : selectedSeason === 'Inverno'
                 ? 'Resultado final consolidado oficial (sem partidas detalhadas inventadas).'
-                : `${seasonMatches.length} partidas registradas na Primavera.`}
+                : `${seasonMatches.length} partidas registradas na ${selectedSeason}.`}
             </p>
           </div>
 
@@ -78,6 +85,17 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
 
         {/* Horizontal Season Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+          <button
+            onClick={() => setSelectedSeason('all')}
+            className={`px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all whitespace-nowrap min-h-[36px] flex items-center justify-center gap-1 ${
+              selectedSeason === 'all'
+                ? 'bg-amber-400 text-stone-950 font-bold shadow-sm'
+                : 'bg-stone-950/80 text-stone-300 hover:bg-stone-800 border border-stone-800'
+            }`}
+          >
+            <span>🏆</span>
+            <span>Todas as Estações (Anual)</span>
+          </button>
           {SEASONS.map(season => {
             const isCurrent = season === selectedSeason;
             return (
@@ -94,16 +112,6 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
               </button>
             );
           })}
-          <button
-            onClick={() => setSelectedSeason('all')}
-            className={`px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all whitespace-nowrap min-h-[36px] flex items-center justify-center ${
-              selectedSeason === 'all'
-                ? 'bg-amber-400 text-stone-950 font-bold shadow-sm'
-                : 'bg-stone-950/80 text-stone-300 hover:bg-stone-800 border border-stone-800'
-            }`}
-          >
-            Todas
-          </button>
         </div>
       </div>
 
@@ -206,8 +214,8 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
       ) : (
         /* DYNAMIC LEADERBOARD FOR PRIMAVERA AND ONWARDS */
         <div className="space-y-4">
-          {/* Empty state invitation for Primavera */}
-          {seasonMatches.length === 0 ? (
+          {/* Empty state invitation for specific season */}
+          {selectedSeason !== 'all' && seasonMatches.length === 0 ? (
             <div className="bg-stone-900 border border-stone-800 rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-sm">
               <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
                 <Trophy size={28} />

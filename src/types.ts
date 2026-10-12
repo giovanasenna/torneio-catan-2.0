@@ -98,3 +98,22 @@ export interface AnnualStanding {
   seasonRanks: Record<Season, number | null>;
   rank: number;
 }
+
+export interface PlayerEvolutionPoint {
+  playerId: string;
+  playerName: string;
+  colorHex: string;
+  peGained: number;
+  cumulativePE: number;
+}
+
+export interface MatchTimelinePoint {
+  index: number;
+  matchId: string;
+  label: string;
+  shortLabel: string;
+  date: string;
+  season: Season | 'Inverno';
+  scenarioName: string;
+  players: Record<string, PlayerEvolutionPoint>;
+}

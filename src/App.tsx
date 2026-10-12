@@ -12,9 +12,10 @@ import { MatchFormModal } from './components/MatchFormModal';
 import { ShareModal } from './components/ShareModal';
 import { Match } from './types';
 import { deleteMatch, fetchMatches, resetMatchesToInitial, saveMatch } from './api';
-import { CheckCircle2, Flame, Share2 } from 'lucide-react';
+import { CheckCircle2, Flame, Share2, Sun, Moon } from 'lucide-react';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 
-export default function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('leaderboard');
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,6 +23,7 @@ export default function App() {
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     async function init() {
@@ -130,6 +132,24 @@ export default function App() {
 
           <div className="flex items-center gap-3 text-[11px] text-stone-400">
             <button
+              onClick={toggleTheme}
+              className="hover:text-amber-400 flex items-center gap-1 font-medium transition-colors cursor-pointer"
+              title={theme === 'dark' ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'}
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun size={12} className="text-amber-400" />
+                  <span className="hidden xs:inline">Modo Claro</span>
+                </>
+              ) : (
+                <>
+                  <Moon size={12} className="text-amber-600" />
+                  <span className="hidden xs:inline">Modo Escuro</span>
+                </>
+              )}
+            </button>
+            <span>·</span>
+            <button
               onClick={() => setIsShareModalOpen(true)}
               className="text-amber-400 hover:underline flex items-center gap-1 font-medium"
             >
@@ -216,5 +236,13 @@ export default function App() {
         onOpenShareModal={() => setIsShareModalOpen(true)}
       />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

@@ -166,3 +166,27 @@ export function exportMatchesToCSV(matches: Match[]): string {
 
   return '\uFEFF' + rows.join('\r\n');
 }
+
+export function triggerDownloadFile(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export function downloadBackupJSON(matches: Match[]) {
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const jsonStr = JSON.stringify(matches, null, 2);
+  triggerDownloadFile(jsonStr, `catan_matches_backup_${dateStr}.json`, 'application/json');
+}
+
+export function downloadBackupCSV(matches: Match[]) {
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const csvStr = exportMatchesToCSV(matches);
+  triggerDownloadFile(csvStr, `catan_torneio_dados_${dateStr}.csv`, 'text/csv;charset=utf-8;');
+}

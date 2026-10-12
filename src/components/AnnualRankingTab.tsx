@@ -3,6 +3,7 @@ import { Trophy, Globe, Award, Info, Crown } from 'lucide-react';
 import { Match } from '../types';
 import { calculateAnnualRanking } from '../utils/calculations';
 import { SEASONS } from '../constants';
+import { PerformanceChart } from './PerformanceChart';
 
 interface AnnualRankingTabProps {
   matches: Match[];
@@ -69,6 +70,9 @@ export const AnnualRankingTab: React.FC<AnnualRankingTabProps> = ({ matches }) =
           </div>
         </div>
       )}
+
+      {/* Interactive Performance & Progression Chart */}
+      <PerformanceChart matches={matches} />
 
       {/* Annual Matrix Table */}
       <div className="bg-stone-900 border border-stone-800 rounded-2xl shadow-sm overflow-hidden">
