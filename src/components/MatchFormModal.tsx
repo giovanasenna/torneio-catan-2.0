@@ -441,9 +441,9 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-stone-950/80 backdrop-blur-sm overflow-y-auto">
       {/* Modal Container */}
-      <div className="bg-stone-900 border-0 sm:border sm:border-stone-800 rounded-none sm:rounded-2xl w-full max-w-2xl text-stone-100 shadow-2xl h-full sm:h-auto sm:max-h-[92vh] flex flex-col">
-        {/* Modal Top Bar */}
-        <div className="px-5 py-4 border-b border-stone-800 flex items-center justify-between shrink-0 bg-stone-900 sticky top-0 z-10">
+      <div className="bg-stone-900 border-0 sm:border sm:border-stone-800 rounded-none sm:rounded-2xl w-full max-w-2xl text-stone-100 shadow-2xl h-[100dvh] max-h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col">
+        {/* Modal Top Bar with Notch Protection */}
+        <div className="px-5 py-4 pt-safe sm:pt-4 border-b border-stone-800 flex items-center justify-between shrink-0 bg-stone-900 sticky top-0 z-10">
           <div className="flex items-center gap-2">
             <Trophy className="text-amber-400" size={22} />
             <h2 className="text-base sm:text-lg font-bold font-serif text-amber-100">
@@ -1152,7 +1152,7 @@ export const MatchFormModal: React.FC<MatchFormModalProps> = ({
           </div>
 
           {/* Bottom Action CTA */}
-          <div className="sticky bottom-0 bg-stone-900 pt-3 pb-2 border-t border-stone-800 flex items-center justify-end gap-3 shrink-0">
+          <div className="sticky bottom-0 bg-stone-900 pt-3 pb-safe border-t border-stone-800 flex items-center justify-end gap-3 shrink-0 z-10">
             <button
               type="button"
               onClick={onClose}

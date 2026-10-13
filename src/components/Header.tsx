@@ -121,40 +121,33 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Zone 3: Actions */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Theme Toggle Button (Dark / Light) */}
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-lg transition-colors whitespace-nowrap min-h-[40px] min-w-[40px] justify-center"
+            className="flex items-center gap-1.5 px-2 sm:px-2.5 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-xl transition-colors whitespace-nowrap min-h-[38px] min-w-[38px] justify-center"
             title={theme === 'dark' ? 'Mudar para Modo Claro (Pergaminho)' : 'Mudar para Modo Escuro (Taberna)'}
             aria-label="Alternar tema claro e escuro"
           >
             {theme === 'dark' ? (
               <>
-                <Sun size={16} className="text-amber-400 stroke-[2.2]" />
-                <span className="hidden sm:inline text-stone-300">Claro</span>
+                <Sun size={15} className="text-amber-400 stroke-[2.2]" />
+                <span className="hidden md:inline text-stone-300">Claro</span>
               </>
             ) : (
               <>
-                <Moon size={16} className="text-amber-600 stroke-[2.2]" />
-                <span className="hidden sm:inline text-stone-700">Escuro</span>
+                <Moon size={15} className="text-amber-600 stroke-[2.2]" />
+                <span className="hidden md:inline text-stone-700">Escuro</span>
               </>
             )}
-          </button>
-
-          <button
-            onClick={() => onTabChange('glossary')}
-            className="lg:hidden p-2 text-stone-300 hover:text-amber-400 bg-stone-800 rounded-lg min-h-[40px] min-w-[40px] flex items-center justify-center"
-            title="Ver Regras & Siglas"
-          >
-            <HelpCircle size={17} className="text-amber-400" />
           </button>
 
           {onOpenDataSafetyModal && (
             <button
               onClick={onOpenDataSafetyModal}
-              className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-lg transition-colors whitespace-nowrap min-h-[40px]"
-              title="Segurança dos Dados & Backup para GitHub"
+              className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-xl transition-colors whitespace-nowrap min-h-[38px] min-w-[38px] justify-center"
+              title="Segurança dos Dados & Backup em Nuvem"
+              aria-label="Backup dos dados"
             >
               <ShieldCheck size={16} className="text-emerald-400" />
               <span className="hidden md:inline">Backup</span>
@@ -163,20 +156,21 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={onOpenShareModal}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-lg transition-colors whitespace-nowrap min-h-[40px]"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-stone-200 bg-stone-800 hover:bg-stone-700 border border-stone-700 active:scale-[0.98] rounded-xl transition-colors whitespace-nowrap min-h-[38px] min-w-[38px] justify-center"
             title="Compartilhar app com amigos"
+            aria-label="Compartilhar app"
           >
             <Share2 size={15} className="text-amber-400" />
-            <span className="hidden xs:inline">Compartilhar</span>
+            <span className="hidden md:inline">Compartilhar</span>
           </button>
 
+          {/* Desktop/Tablet Quick Add Button (On Mobile, the prominent center button in MobileBottomNav is used) */}
           <button
             onClick={onOpenMatchModal}
-            className="flex items-center gap-1 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 active:scale-[0.98] rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[40px]"
+            className="hidden sm:flex items-center gap-1 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 active:scale-[0.98] rounded-xl shadow-sm transition-all whitespace-nowrap shrink-0 min-h-[38px]"
           >
             <Plus size={16} className="stroke-[2.5]" />
-            <span className="hidden sm:inline">Registrar Partida</span>
-            <span className="sm:hidden">Partida</span>
+            <span>Registrar Partida</span>
           </button>
         </div>
       </div>

@@ -10,9 +10,11 @@ import { GlossaryTab } from './components/GlossaryTab';
 import { DataAndStreamlitTab } from './components/DataAndStreamlitTab';
 import { MatchFormModal } from './components/MatchFormModal';
 import { ShareModal } from './components/ShareModal';
+import { DataSafetyModal } from './components/DataSafetyModal';
 import { Match } from './types';
 import { deleteMatch, fetchMatches, resetMatchesToInitial, saveMatch } from './api';
-import { CheckCircle2, Flame, Share2, Sun, Moon } from 'lucide-react';
+import { subscribeToMatches } from './services/firebase';
+import { CheckCircle2, Flame, Share2, Sun, Moon, Cloud, ShieldCheck } from 'lucide-react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
 function AppContent() {
@@ -21,11 +23,14 @@ function AppContent() {
   const [loading, setLoading] = useState<boolean>(true);
   const [isMatchModalOpen, setIsMatchModalOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [isDataSafetyModalOpen, setIsDataSafetyModalOpen] = useState<boolean>(false);
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
     async function init() {
       try {
         const loaded = await fetchMatches();
@@ -35,8 +40,20 @@ function AppContent() {
       } finally {
         setLoading(false);
       }
+
+      // Real-time synchronization via Cloud Firestore
+      unsubscribe = subscribeToMatches((realtimeMatches) => {
+        if (Array.isArray(realtimeMatches) && realtimeMatches.length > 0) {
+          setMatches(realtimeMatches);
+        }
+      });
     }
+
     init();
+
+    return () => {
+      unsubscribe?.();
+    };
   }, []);
 
   const showToast = (msg: string) => {
@@ -114,50 +131,60 @@ function AppContent() {
         onTabChange={setActiveTab}
         onOpenMatchModal={handleOpenNewMatch}
         onOpenShareModal={() => setIsShareModalOpen(true)}
+        onOpenDataSafetyModal={() => setIsDataSafetyModalOpen(true)}
       />
 
       {/* Hero Sub-header / Status strip */}
-      <section className="bg-stone-900/60 border-b border-stone-800/80 px-4 sm:px-6 lg:px-8 py-2.5">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-stone-400">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="flex items-center gap-1.5 text-stone-300 font-medium">
-              <Flame size={14} className="text-amber-400" />
-              Torneio das 4 Estações de Catan
+      <section className="bg-stone-900/60 border-b border-stone-800/80 px-3 sm:px-6 lg:px-8 py-2">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 text-xs text-stone-400">
+          <div className="flex items-center gap-x-2.5 gap-y-1 flex-wrap">
+            <span className="flex items-center gap-1.5 text-stone-300 font-medium whitespace-nowrap">
+              <Flame size={14} className="text-amber-400 shrink-0" />
+              <span>Torneio Catan</span>
             </span>
-            <span>·</span>
-            <span>Edição: <strong className="text-amber-300">Primavera</strong></span>
-            <span>·</span>
-            <span className="hidden sm:inline">4 Oficiais: Jhonata, Rodrigo, Giovana, Zhang</span>
+            <span className="text-stone-600 hidden xs:inline" aria-hidden="true">·</span>
+            <span className="whitespace-nowrap">Edição: <strong className="text-amber-300">Primavera</strong></span>
+            <span className="text-stone-600 hidden md:inline" aria-hidden="true">·</span>
+            <span className="hidden md:inline">4 Oficiais: Jhonata, Rodrigo, Giovana, Zhang</span>
+            <span className="text-stone-600 hidden sm:inline" aria-hidden="true">·</span>
+            <button
+              onClick={() => setIsDataSafetyModalOpen(true)}
+              className="flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-950/60 hover:bg-emerald-900/50 border border-emerald-800/60 px-2.5 py-0.5 rounded-full font-medium transition-colors cursor-pointer"
+              title="Clique para ver o status do banco de dados na nuvem ou fazer backup"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Nuvem em Tempo Real Ativa</span>
+            </button>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px] text-stone-400">
+          <div className="flex items-center gap-x-2.5 gap-y-1 text-[11px] text-stone-400 flex-wrap">
             <button
               onClick={toggleTheme}
-              className="hover:text-amber-400 flex items-center gap-1 font-medium transition-colors cursor-pointer"
+              className="hover:text-amber-400 flex items-center gap-1 font-medium transition-colors cursor-pointer py-0.5"
               title={theme === 'dark' ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'}
             >
               {theme === 'dark' ? (
                 <>
                   <Sun size={12} className="text-amber-400" />
-                  <span className="hidden xs:inline">Modo Claro</span>
+                  <span>Modo Claro</span>
                 </>
               ) : (
                 <>
                   <Moon size={12} className="text-amber-600" />
-                  <span className="hidden xs:inline">Modo Escuro</span>
+                  <span>Modo Escuro</span>
                 </>
               )}
             </button>
-            <span>·</span>
+            <span className="text-stone-600" aria-hidden="true">·</span>
             <button
               onClick={() => setIsShareModalOpen(true)}
-              className="text-amber-400 hover:underline flex items-center gap-1 font-medium"
+              className="text-amber-400 hover:underline flex items-center gap-1 font-medium py-0.5"
             >
               <Share2 size={12} />
-              <span>Convidar amigos</span>
+              <span>Convidar</span>
             </button>
-            <span>·</span>
-            <span className="font-mono">{matches.length} partidas registradas</span>
+            <span className="text-stone-600" aria-hidden="true">·</span>
+            <span className="font-mono text-stone-400">{matches.length} partidas</span>
           </div>
         </div>
       </section>
@@ -228,12 +255,21 @@ function AppContent() {
         onClose={() => setIsShareModalOpen(false)}
       />
 
+      {/* Data Safety & Backup Modal */}
+      <DataSafetyModal
+        isOpen={isDataSafetyModalOpen}
+        onClose={() => setIsDataSafetyModalOpen(false)}
+        matches={matches}
+        onMatchesUpdated={setMatches}
+      />
+
       {/* Mobile Fixed Bottom Navigation for Smartphones */}
       <MobileBottomNav
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onOpenMatchModal={handleOpenNewMatch}
         onOpenShareModal={() => setIsShareModalOpen(true)}
+        onOpenDataSafetyModal={() => setIsDataSafetyModalOpen(true)}
       />
     </div>
   );

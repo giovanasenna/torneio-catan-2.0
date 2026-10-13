@@ -103,10 +103,10 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ matches }) =
         </div>
 
         {/* View mode toggle */}
-        <div className="flex items-center bg-stone-950 p-1 rounded-xl border border-stone-800 self-start sm:self-auto">
+        <div className="grid grid-cols-2 sm:flex items-center bg-stone-950 p-1 rounded-xl border border-stone-800 w-full sm:w-auto">
           <button
             onClick={() => setViewMode('cumulative')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-center ${
               viewMode === 'cumulative'
                 ? 'bg-amber-400 text-stone-950 shadow-sm'
                 : 'text-stone-400 hover:text-stone-200'
@@ -116,7 +116,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ matches }) =
           </button>
           <button
             onClick={() => setViewMode('per_match')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-center ${
               viewMode === 'per_match'
                 ? 'bg-amber-400 text-stone-950 shadow-sm'
                 : 'text-stone-400 hover:text-stone-200'
@@ -274,27 +274,42 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ matches }) =
                   strokeLinejoin="round"
                 />
 
-                {/* Dot for each match */}
+                {/* Dot for each match with enlarged mobile touch hitbox */}
                 {points.map((pt, idx) => {
                   const isPointSelected = activePoint.index === idx;
                   return (
-                    <circle
-                      key={`dot-${player.id}-${idx}`}
-                      cx={pt.x}
-                      cy={pt.y}
-                      r={isPointSelected ? 5.5 : 3.5}
-                      fill={strokeColor}
-                      stroke="#1c1917"
-                      strokeWidth={isPointSelected ? 2.5 : 1.5}
-                      className="cursor-pointer hover:scale-125 transition-transform"
-                      onClick={() => setSelectedPointIndex(idx)}
-                    />
+                    <g key={`dot-${player.id}-${idx}`}>
+                      {/* Invisible generous touch target (36px diameter) for mobile thumbs */}
+                      <circle
+                        cx={pt.x}
+                        cy={pt.y}
+                        r="18"
+                        fill="transparent"
+                        className="cursor-pointer"
+                        onClick={() => setSelectedPointIndex(idx)}
+                      />
+                      {/* Visible styled point */}
+                      <circle
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={isPointSelected ? 6 : 4}
+                        fill={strokeColor}
+                        stroke="#1c1917"
+                        strokeWidth={isPointSelected ? 2.5 : 1.5}
+                        className="pointer-events-none"
+                      />
+                    </g>
                   );
                 })}
               </g>
             );
           })}
         </svg>
+      </div>
+
+      {/* Mobile Swipe Hint */}
+      <div className="text-[11px] text-stone-500 block sm:hidden text-center">
+        👈 Deslize horizontalmente para navegar pelas partidas 👉
       </div>
 
       {/* Interactive Detail Box for Selected Point */}

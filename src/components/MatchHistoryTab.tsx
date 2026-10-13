@@ -242,13 +242,13 @@ export const MatchHistoryTab: React.FC<MatchHistoryTabProps> = ({
                         </div>
 
                         <div className="mt-1.5 pt-1.5 border-t border-stone-800/60 text-[10px] text-stone-400 space-y-0.5">
-                          <div className="flex justify-between">
-                            <span>Norm:</span>
-                            <span className="font-mono text-stone-300">{p.normalizedVP.toFixed(2)}</span>
+                          <div className="flex justify-between items-center bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-900/50 text-amber-300 font-bold">
+                            <span>PE:</span>
+                            <span className="font-mono text-amber-200">+{((p.pe ?? (p.vp / match.targetVP * 10 + (p.isWinner ? 2 : 0)))).toFixed(1)}</span>
                           </div>
-                          <div className="flex justify-between">
+                          <div className="flex justify-between text-stone-400 pt-0.5">
                             <span>VP%:</span>
-                            <span className="font-mono text-amber-300 font-bold">{p.balancedVPPercent}%</span>
+                            <span className="font-mono text-stone-300">{p.balancedVPPercent}%</span>
                           </div>
                         </div>
                       </div>

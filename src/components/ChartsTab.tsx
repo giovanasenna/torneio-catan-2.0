@@ -90,10 +90,10 @@ export const ChartsTab: React.FC<ChartsTabProps> = ({ matches }) => {
         </div>
 
         {/* View mode toggle */}
-        <div className="flex items-center gap-1 bg-stone-950/80 p-1 rounded-xl border border-stone-800">
+        <div className="flex items-center gap-1 bg-stone-950/80 p-1 rounded-xl border border-stone-800 w-full sm:w-auto overflow-x-auto no-scrollbar">
           <button
             onClick={() => setMetricMode('wins')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+            className={`flex-1 sm:flex-initial whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-center ${
               metricMode === 'wins' ? 'bg-amber-400 text-stone-950' : 'text-stone-400 hover:text-stone-200'
             }`}
           >
@@ -101,7 +101,7 @@ export const ChartsTab: React.FC<ChartsTabProps> = ({ matches }) => {
           </button>
           <button
             onClick={() => setMetricMode('totalVP')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+            className={`flex-1 sm:flex-initial whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-center ${
               metricMode === 'totalVP' ? 'bg-amber-400 text-stone-950' : 'text-stone-400 hover:text-stone-200'
             }`}
           >
@@ -109,7 +109,7 @@ export const ChartsTab: React.FC<ChartsTabProps> = ({ matches }) => {
           </button>
           <button
             onClick={() => setMetricMode('winRate')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+            className={`flex-1 sm:flex-initial whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-center ${
               metricMode === 'winRate' ? 'bg-amber-400 text-stone-950' : 'text-stone-400 hover:text-stone-200'
             }`}
           >
@@ -246,6 +246,11 @@ export const ChartsTab: React.FC<ChartsTabProps> = ({ matches }) => {
             </div>
           )}
 
+          {/* Mobile Swipe Hint */}
+          <div className="text-[11px] text-stone-500 block sm:hidden text-center">
+            👈 Deslize horizontalmente para navegar pelas partidas 👉
+          </div>
+
           {/* Player Legend */}
           <div className="flex items-center justify-center gap-4 flex-wrap pt-2 border-t border-stone-800/80">
             {OFFICIAL_PLAYERS.map(op => (
@@ -312,7 +317,7 @@ export const ChartsTab: React.FC<ChartsTabProps> = ({ matches }) => {
             <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
               Média de PV por Partida
             </h4>
-            <div className="grid grid-cols-4 gap-2 text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
               {standings.filter(s => s.isOfficial).map(p => (
                 <div key={p.playerId} className="bg-stone-950/70 p-2 rounded-xl border border-stone-800">
                   <div className="text-base font-bold font-mono text-stone-200 tabular-nums">

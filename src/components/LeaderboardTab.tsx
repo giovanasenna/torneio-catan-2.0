@@ -275,8 +275,17 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
                         </div>
 
                         <div className="grid grid-cols-3 gap-2 bg-stone-950/60 p-3 rounded-xl border border-stone-800/80 text-center">
-                          <div>
-                            <span className="text-xl font-bold font-mono text-amber-400 block tabular-nums">
+                          <div className="bg-amber-950/30 rounded-lg py-1 border border-amber-900/40">
+                            <span className="text-xl font-bold font-mono text-amber-300 block tabular-nums">
+                              {row.totalPE.toFixed(1)}
+                            </span>
+                            <span className="text-[10px] uppercase font-bold text-amber-400 tracking-wider">
+                              Total PE
+                            </span>
+                          </div>
+
+                          <div className="py-1">
+                            <span className="text-xl font-bold font-mono text-stone-100 block tabular-nums">
                               {row.wins}
                             </span>
                             <span className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">
@@ -284,21 +293,12 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
                             </span>
                           </div>
 
-                          <div>
-                            <span className="text-xl font-bold font-mono text-stone-100 block tabular-nums">
-                              {row.totalVP}
-                            </span>
-                            <span className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">
-                              PV Total
-                            </span>
-                          </div>
-
-                          <div>
+                          <div className="py-1">
                             <span className="text-xl font-bold font-mono text-emerald-400 block tabular-nums">
-                              {row.avgBalancedVPPercent.toFixed(1)}%
+                              {row.avgPE.toFixed(1)}
                             </span>
                             <span className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">
-                              Média VP%
+                              Média PE
                             </span>
                           </div>
                         </div>
@@ -316,12 +316,12 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
                               <span className="font-mono font-bold text-amber-400 text-sm">{row.winRate.toFixed(1)}%</span>
                             </div>
                             <div className="bg-stone-900/80 p-2.5 rounded-lg border border-stone-800">
-                              <span className="text-stone-400 block text-[11px]">PV Médio / Partida</span>
-                              <span className="font-mono font-bold text-stone-100 text-sm">{row.avgVP.toFixed(2)}</span>
+                              <span className="text-stone-400 block text-[11px]">PV Total Acumulado</span>
+                              <span className="font-mono font-bold text-stone-100 text-sm">{row.totalVP} PV</span>
                             </div>
                             <div className="bg-stone-900/80 p-2.5 rounded-lg border border-stone-800">
-                              <span className="text-stone-400 block text-[11px]">Maior Pontuação</span>
-                              <span className="font-mono font-bold text-stone-100 text-sm">{row.highestVP} PV</span>
+                              <span className="text-stone-400 block text-[11px]">Média VP% Balanceado</span>
+                              <span className="font-mono font-bold text-emerald-400 text-sm">{row.avgBalancedVPPercent.toFixed(1)}%</span>
                             </div>
                           </div>
                         </div>

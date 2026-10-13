@@ -82,7 +82,7 @@ export function calculateStandings(
       const winterBasePE = (isAllSeasons2026 && winterData)
         ? (PONTOS_BASE_INVERNO_2026[official.id] || winterData.pePoints || 115.0)
         : 0;
-      const winterMatches = (isAllSeasons2026 && winterData) ? (winterData.matches || 15) : 0;
+      const winterMatches = (isAllSeasons2026 && winterData) ? (winterData.wins + winterData.losses) : 0;
       const winterWins = (isAllSeasons2026 && winterData) ? (winterData.wins || 0) : 0;
 
       playerMap.set(official.id, {

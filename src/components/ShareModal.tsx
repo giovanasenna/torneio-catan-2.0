@@ -43,7 +43,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-stone-900 border border-stone-800 rounded-2xl w-full max-w-lg text-stone-100 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-stone-900 border border-stone-800 rounded-2xl w-full max-w-lg text-stone-100 shadow-2xl overflow-hidden flex flex-col max-h-[92dvh]">
         {/* Modal Header */}
         <div className="px-5 py-4 border-b border-stone-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">

@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "Match": {
+      "title": "Match",
+      "description": "Uma partida do Torneio das 4 Estações de Catan",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Identificador da partida"
+        },
+        "date": {
+          "type": "string",
+          "description": "Data da partida (YYYY-MM-DD)"
+        },
+        "season": {
+          "type": "string",
+          "description": "Estação do torneio (Inverno, Primavera, Verão, Outono)"
+        },
+        "scenarioId": {
+          "type": "string",
+          "description": "Identificador do cenário"
+        },
+        "scenarioName": {
+          "type": "string",
+          "description": "Nome do cenário de Catan"
+        },
+        "targetVP": {
+          "type": "number",
+          "description": "Meta de Pontos de Vitória do cenário"
+        },
+        "is5to6Players": {
+          "type": "boolean",
+          "description": "Indica se foi jogado com expansão de 5 a 6 jogadores"
+        },
+        "winnerId": {
+          "type": "string",
+          "description": "ID do vencedor da partida"
+        },
+        "winnerName": {
+          "type": "string",
+          "description": "Nome do vencedor"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp ISO de criação"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Observações sobre a partida"
+        },
+        "playerResults": {
+          "type": "array",
+          "description": "Lista de resultados dos jogadores na partida"
+        }
+      },
+      "required": ["id", "season", "scenarioId", "scenarioName", "targetVP", "playerResults"]
+    }
+  },
+  "firestore": {
+    "/matches/{matchId}": {
+      "schema": "Match",
+      "description": "Coleção de partidas do torneio sincronizadas na nuvem em tempo real para todos os jogadores"
+    }
+  }
+}

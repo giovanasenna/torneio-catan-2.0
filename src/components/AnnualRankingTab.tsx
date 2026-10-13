@@ -74,8 +74,69 @@ export const AnnualRankingTab: React.FC<AnnualRankingTabProps> = ({ matches }) =
       {/* Interactive Performance & Progression Chart */}
       <PerformanceChart matches={matches} />
 
-      {/* Annual Matrix Table */}
-      <div className="bg-stone-900 border border-stone-800 rounded-2xl shadow-sm overflow-hidden">
+      {/* Annual Matrix - Mobile Cards View */}
+      <div className="block md:hidden space-y-3">
+        {annualStandings.map(row => {
+          const rankMedal =
+            row.rank === 1 ? '🥇 1º Lugar' : row.rank === 2 ? '🥈 2º Lugar' : row.rank === 3 ? '🥉 3º Lugar' : `${row.rank}º Lugar`;
+
+          return (
+            <div
+              key={row.playerId}
+              className={`bg-stone-900 border rounded-2xl p-4 shadow-sm space-y-3 transition-all ${
+                row.rank === 1
+                  ? 'border-amber-500/60 bg-gradient-to-b from-amber-950/20 via-stone-900 to-stone-900'
+                  : 'border-stone-800'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="font-mono font-bold text-xs px-2 py-0.5 rounded-lg bg-stone-950 text-stone-300 border border-stone-800">
+                    {rankMedal}
+                  </span>
+                  <div
+                    className="w-4 h-4 rounded-full border border-stone-500 shrink-0 shadow-sm"
+                    style={{ backgroundColor: row.colorHex }}
+                  />
+                  <span className="font-bold text-base text-stone-100 font-serif">
+                    {row.playerName}
+                  </span>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-lg font-bold font-mono text-amber-400 block tabular-nums">
+                    {row.totalAnnualPoints.toFixed(1)} PE
+                  </span>
+                  <span className="text-[10px] text-stone-400 uppercase font-semibold">
+                    Total Anual
+                  </span>
+                </div>
+              </div>
+
+              {/* Seasons breakdown grid on mobile */}
+              <div className="grid grid-cols-2 gap-2 pt-1 border-t border-stone-800/80 text-xs">
+                {SEASONS.map(s => {
+                  const pts = row.pointsBySeason[s];
+                  const pos = row.seasonRanks[s];
+                  return (
+                    <div key={s} className="bg-stone-950/60 p-2 rounded-xl border border-stone-800/70 flex items-center justify-between">
+                      <span className="text-stone-400 text-[11px]">
+                        {s} {s === 'Primavera' ? '🌱' : s === 'Inverno' ? '❄️' : s === 'Verão' ? '☀️' : '🍂'}
+                      </span>
+                      <span className="font-mono font-bold text-stone-200">
+                        {pts > 0 ? `${pts.toFixed(1)} PE` : '-'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Annual Matrix - Desktop Table View */}
+      <div className="hidden md:block bg-stone-900 border border-stone-800 rounded-2xl shadow-sm overflow-hidden">
         <div className="p-4 border-b border-stone-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Trophy className="text-amber-400" size={18} />

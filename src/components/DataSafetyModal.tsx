@@ -76,7 +76,7 @@ git push origin main`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
-      <div className="bg-stone-900 border border-stone-800 rounded-3xl max-w-xl w-full p-5 sm:p-6 space-y-5 shadow-2xl my-auto">
+      <div className="bg-stone-900 border border-stone-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl my-auto max-h-[92dvh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-stone-800/80 pb-3">
           <div className="flex items-center gap-3">
