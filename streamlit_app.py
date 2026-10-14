@@ -60,13 +60,13 @@ CENARIOS_CATAN = {
 PONTOS_ANUAIS = {1: 10, 2: 6, 3: 3, 4: 1}
 ARQUIVO_CSV_LOCAL = "catan_torneio_dados.csv"
 
-# Pontos Base Oficiais de 2026 - Reconstrução Histórica por Valor Esperado (12 PE vitória + 7 PE derrota)
+# Pontos Base Oficiais de 2026 - 15 partidas no Catan Jogo Base (Vencedor 10 PV = 12 PE, Demais 9 PV = 9 PE)
 PONTOS_BASE_INVERNO_2026 = {
-    "Zhang": 135.0,    # (6 * 12.0) + (9 * 7.0)
-    "Rodrigo": 130.0,  # (5 * 12.0) + (10 * 7.0)
-    "Gina": 115.0,     # (2 * 12.0) + (13 * 7.0)
-    "Giovana": 115.0,  # Alias para compatibilidade
-    "Jhonata": 115.0   # (2 * 12.0) + (13 * 7.0)
+    "Zhang": 153.0,    # (6 * 12.0) + (9 * 9.0)
+    "Rodrigo": 150.0,  # (5 * 12.0) + (10 * 9.0)
+    "Gina": 141.0,     # (2 * 12.0) + (13 * 9.0)
+    "Giovana": 141.0,  # Alias para compatibilidade
+    "Jhonata": 141.0   # (2 * 12.0) + (13 * 9.0)
 }
 
 # -----------------------------------------------------------------------------

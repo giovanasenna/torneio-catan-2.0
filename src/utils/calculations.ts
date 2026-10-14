@@ -47,9 +47,8 @@ export function calculateBalancedVPPercent(
 
 /**
  * Computes the leaderboard standings for a given season or across all seasons.
- * Ranking Criteria:
- * Quando seasonFilter === 'all': Incorpora o Inverno 2026 oficial (15 jogos, 135/130/115/115 PE)
- * para os jogadores oficiais + soma das partidas registradas nas demais estações.
+ * Se houver partidas registradas de Inverno (15 partidas: vencedor 10 PV, demais 9 PV no Catan jogo base),
+ * soma as partidas reais. Caso contrário, utiliza a base inicial oficial de 2026.
  */
 export function calculateStandings(
   matches: Match[],
@@ -74,16 +73,19 @@ export function calculateStandings(
     highestVP: number;
   }>();
 
-  // Pre-seed official players so they always appear in standings
+  const hasWinterMatches = matches.some(m => m.season === 'Inverno');
   const isAllSeasons2026 = (seasonFilter === 'all') && seasonYear === 2026;
+
+  // Pre-seed official players so they always appear in standings
   if (!includeVisitors || seasonFilter !== 'all' || isAllSeasons2026) {
     for (const official of OFFICIAL_PLAYERS) {
       const winterData = WINTER_S1_OFFICIAL.find(w => w.playerId === official.id);
-      const winterBasePE = (isAllSeasons2026 && winterData)
-        ? (PONTOS_BASE_INVERNO_2026[official.id] || winterData.pePoints || 115.0)
+      // Apenas adiciona pontos estáticos de base se NÃO houver partidas reais de Inverno no banco
+      const winterBasePE = (isAllSeasons2026 && !hasWinterMatches && winterData)
+        ? (PONTOS_BASE_INVERNO_2026[official.id] || winterData.pePoints || 141.0)
         : 0;
-      const winterMatches = (isAllSeasons2026 && winterData) ? (winterData.wins + winterData.losses) : 0;
-      const winterWins = (isAllSeasons2026 && winterData) ? (winterData.wins || 0) : 0;
+      const winterMatches = (isAllSeasons2026 && !hasWinterMatches && winterData) ? (winterData.wins + winterData.losses) : 0;
+      const winterWins = (isAllSeasons2026 && !hasWinterMatches && winterData) ? (winterData.wins || 0) : 0;
 
       playerMap.set(official.id, {
         playerId: official.id,
@@ -193,9 +195,7 @@ export function calculateStandings(
 
 /**
  * Computes Annual Ranking across the 4 Seasons for the 4 Official Players.
- * Temporada 2026: Reconstrução por Valor Esperado para o Inverno (135 PE, 130 PE, 115 PE, 115 PE)
- * + soma de PE das partidas disputadas nas demais estações (Primavera, Verão, Outono).
- * Temporada 2027+: 100% soma de partidas de todas as 4 estações.
+ * Se houver partidas registradas no Inverno, calcula diretamente a pontuação de Inverno a partir delas.
  */
 export function calculateAnnualRanking(matches: Match[], seasonYear: number = 2026): AnnualStanding[] {
   const result: Record<string, AnnualStanding> = {};
@@ -222,38 +222,60 @@ export function calculateAnnualRanking(matches: Match[], seasonYear: number = 20
     };
   }
 
-  // 1. Inverno: Utiliza a Reconstrução por Valor Esperado (135/130/115/115 PE) para 2026
-  if (seasonYear === 2026) {
-    for (const item of WINTER_S1_OFFICIAL) {
-      if (result[item.playerId]) {
-        const basePE = PONTOS_BASE_INVERNO_2026[item.playerId] || item.pePoints || 115.0;
-        result[item.playerId].pointsBySeason.Inverno = basePE;
-        result[item.playerId].seasonRanks.Inverno = item.rank;
-        result[item.playerId].totalAnnualPoints = basePE;
+  const hasWinterMatches = matches.some(m => m.season === 'Inverno');
+
+  if (hasWinterMatches) {
+    const seasonsToProcess: Season[] = ['Inverno', 'Primavera', 'Verão', 'Outono'];
+    for (const season of seasonsToProcess) {
+      const seasonMatches = matches.filter(m => m.season === season);
+      if (seasonMatches.length === 0) continue;
+
+      const seasonStandings = calculateStandings(matches, season, false, seasonYear);
+
+      seasonStandings.forEach(standing => {
+        const peTotal = standing.totalPE;
+        const pos = standing.rank;
+        if (result[standing.playerId]) {
+          result[standing.playerId].pointsBySeason[season] = peTotal;
+          result[standing.playerId].seasonRanks[season] = pos;
+          result[standing.playerId].totalAnnualPoints = Number(
+            (result[standing.playerId].totalAnnualPoints + peTotal).toFixed(2)
+          );
+        }
+      });
+    }
+  } else {
+    // Fallback: se não houver partidas de Inverno no banco, usa os pontos consolidados oficiais
+    if (seasonYear === 2026) {
+      for (const item of WINTER_S1_OFFICIAL) {
+        if (result[item.playerId]) {
+          const basePE = PONTOS_BASE_INVERNO_2026[item.playerId] || item.pePoints || 141.0;
+          result[item.playerId].pointsBySeason.Inverno = basePE;
+          result[item.playerId].seasonRanks.Inverno = item.rank;
+          result[item.playerId].totalAnnualPoints = basePE;
+        }
       }
     }
-  }
 
-  // 2. Demais Estações (ou todas em 2027+): soma direta dos Pontos de Eficiência (PE)
-  const seasonsToProcess: Season[] = seasonYear === 2026
-    ? ['Primavera', 'Verão', 'Outono']
-    : ['Inverno', 'Primavera', 'Verão', 'Outono'];
+    const seasonsToProcess: Season[] = ['Primavera', 'Verão', 'Outono'];
+    for (const season of seasonsToProcess) {
+      const seasonMatches = matches.filter(m => m.season === season);
+      if (seasonMatches.length === 0) continue;
 
-  for (const season of seasonsToProcess) {
-    const seasonMatches = matches.filter(m => m.season === season);
-    if (seasonMatches.length === 0) continue;
+      const seasonStandings = calculateStandings(matches, season, false, seasonYear);
 
-    const seasonStandings = calculateStandings(matches, season, false);
-
-    seasonStandings.forEach(standing => {
-      const peTotal = standing.totalPE;
-      const pos = standing.rank;
-      if (result[standing.playerId]) {
-        result[standing.playerId].pointsBySeason[season] = peTotal;
-        result[standing.playerId].seasonRanks[season] = pos;
-        result[standing.playerId].totalAnnualPoints = Number((result[standing.playerId].totalAnnualPoints + peTotal).toFixed(2));
-      }
-    });
+      seasonStandings.forEach(standing => {
+        const peTotal = standing.totalPE;
+        const pos = standing.rank;
+        if (result[standing.playerId]) {
+          result[standing.playerId].pointsBySeason[season] = peTotal;
+          result[standing.playerId].seasonRanks[season] = pos;
+          result[standing.playerId].totalAnnualPoints = Number(
+            (result[standing.playerId].totalAnnualPoints + peTotal).toFixed(2)
+          );
+        }
+      });
+    }
   }
 
   const annualList = Object.values(result);
@@ -262,7 +284,6 @@ export function calculateAnnualRanking(matches: Match[], seasonYear: number = 20
     if (b.totalAnnualPoints !== a.totalAnnualPoints) {
       return b.totalAnnualPoints - a.totalAnnualPoints;
     }
-    // Tiebreaker: compare Inverno rank
     const rankA = a.seasonRanks.Inverno || 99;
     const rankB = b.seasonRanks.Inverno || 99;
     return rankA - rankB;
@@ -277,25 +298,31 @@ export function calculateAnnualRanking(matches: Match[], seasonYear: number = 20
 
 /**
  * Calculates the chronological evolution of points (PE) for the official players over time.
- * Point 0: Base oficial consolidada do Inverno 2026 (135, 130, 115, 115 PE).
- * Points 1..N: Partidas subsequentes em ordem cronológica com PE acumulado e PE conquistado no jogo.
+ * Inclui todas as partidas em ordem cronológica (Inverno 1..15 + Primavera + ...).
  */
 export function calculateTimelineEvolution(
   matches: Match[],
   seasonYear: number = 2026
 ): MatchTimelinePoint[] {
   const timeline: MatchTimelinePoint[] = [];
+  const hasWinterMatches = matches.some(m => m.season === 'Inverno');
 
   const cumulativeMap: Record<string, number> = {};
   for (const official of OFFICIAL_PLAYERS) {
-    const winterData = WINTER_S1_OFFICIAL.find(w => w.playerId === official.id);
-    const base = seasonYear === 2026
-      ? (PONTOS_BASE_INVERNO_2026[official.id] || winterData?.pePoints || 115.0)
-      : 0;
-    cumulativeMap[official.id] = base;
+    if (hasWinterMatches) {
+      // Começa no zero antes da 1ª partida do ano
+      cumulativeMap[official.id] = 0;
+    } else {
+      // Fallback: se não houver partidas de Inverno, começa com a base consolidada
+      const winterData = WINTER_S1_OFFICIAL.find(w => w.playerId === official.id);
+      const base = seasonYear === 2026
+        ? (PONTOS_BASE_INVERNO_2026[official.id] || winterData?.pePoints || 141.0)
+        : 0;
+      cumulativeMap[official.id] = base;
+    }
   }
 
-  // Ponto Inicial (Base do Inverno)
+  // Ponto Inicial no gráfico
   const initialPlayers: Record<string, PlayerEvolutionPoint> = {};
   for (const official of OFFICIAL_PLAYERS) {
     const base = cumulativeMap[official.id];
@@ -310,12 +337,12 @@ export function calculateTimelineEvolution(
 
   timeline.push({
     index: 0,
-    matchId: 'base-inverno',
-    label: 'Inverno 2026 (Base Oficial)',
-    shortLabel: 'Base Inverno',
-    date: 'Inverno 2026',
+    matchId: 'base-inicio',
+    label: hasWinterMatches ? 'Início do Torneio (Pré-temporada)' : 'Inverno 2026 (Base Oficial)',
+    shortLabel: hasWinterMatches ? 'Início' : 'Base Inverno',
+    date: '2026-07-01',
     season: 'Inverno',
-    scenarioName: '15 Partidas Iniciais Consolidadas',
+    scenarioName: hasWinterMatches ? 'Início do Circuito' : '15 Partidas Iniciais Consolidadas',
     players: initialPlayers,
   });
 
@@ -333,7 +360,9 @@ export function calculateTimelineEvolution(
     const currentPlayers: Record<string, PlayerEvolutionPoint> = {};
 
     for (const official of OFFICIAL_PLAYERS) {
-      const res = m.playerResults.find(r => r.playerId === official.id || r.playerName.toLowerCase() === official.name.toLowerCase());
+      const res = m.playerResults.find(
+        r => r.playerId === official.id || r.playerName.toLowerCase() === official.name.toLowerCase()
+      );
       let peGained = 0;
       if (res) {
         peGained = res.pe ?? calculatePE(res.vp, m.targetVP, res.isWinner, isTieForWinner);

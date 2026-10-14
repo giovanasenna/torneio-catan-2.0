@@ -33,7 +33,7 @@ export const AnnualRankingTab: React.FC<AnnualRankingTabProps> = ({ matches }) =
         <div className="flex items-center gap-2 bg-stone-950/70 border border-stone-800 px-3.5 py-2 rounded-xl text-xs text-stone-300">
           <Info size={16} className="text-amber-400 shrink-0" />
           <span>
-            Pontos de Eficiência (PE): <strong>Base Inverno 2026</strong> (Zhang: 135 · Rodrigo: 130 · Gina: 115 · Jhonata: 115) + <strong>PE das demais estações</strong>
+            Pontos de Eficiência (PE): <strong>Inverno 2026</strong> (15 partidas no Jogo Base: Vencedor 10 PV, demais 9 PV) + <strong>PE das demais estações</strong>
           </span>
         </div>
       </div>

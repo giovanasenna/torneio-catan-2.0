@@ -32,7 +32,7 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg sm:text-2xl font-bold font-serif text-amber-100">
-                {selectedSeason === 'all' ? 'Circuito Anual (Geral)' : 'Classificação da Estação'}
+                {selectedSeason === 'all' ? 'Circuito Anual (Geral)' : selectedSeason === 'Inverno' ? 'Classificação Winter S1 (Inverno)' : 'Classificação da Estação'}
               </h1>
               {selectedSeason === 'all' && (
                 <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
@@ -46,15 +46,15 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
               )}
               {selectedSeason === 'Inverno' && (
                 <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
-                  Winter S1 (Encerrado)
+                  Winter S1 (15 Partidas)
                 </span>
               )}
             </div>
             <p className="text-xs sm:text-sm text-stone-400 mt-0.5">
               {selectedSeason === 'all'
-                ? `Pontuação Anual Contínua: 15 partidas do Inverno (base) + ${matches.length} partidas das demais estações.`
+                ? `Circuito consolidado: 15 partidas do Inverno + ${matches.filter(m => m.season !== 'Inverno').length} partidas das demais estações.`
                 : selectedSeason === 'Inverno'
-                ? 'Resultado final consolidado oficial (sem partidas detalhadas inventadas).'
+                ? 'Histórico oficial do Inverno: 15 partidas no Catan Jogo Base (Vencedor: 10 PV, Demais: 9 PV).'
                 : `${seasonMatches.length} partidas registradas na ${selectedSeason}.`}
             </p>
           </div>
@@ -139,81 +139,19 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
         </div>
       )}
 
-      {/* SPECIAL VIEW FOR INVERNO (WINTER S1) - ONLY THE REAL OFFICIAL OUTCOME */}
-      {selectedSeason === 'Inverno' ? (
-        <div className="space-y-4">
-          <div className="p-4 bg-blue-950/30 border border-blue-900/60 rounded-2xl flex items-start gap-3">
-            <ShieldCheck size={20} className="text-blue-400 shrink-0 mt-0.5" />
-            <div className="text-xs text-blue-200 leading-relaxed">
-              <strong>Resultado Oficial Consolidado (Winter S1 - 2026):</strong><br />
-              Nenhum dado ou pontuação de partida fictícia foi inserido. Abaixo está estritamente o resultado final oficial conquistado pelos 4 jogadores no Inverno. Os registros detalhados partida a partida começam a partir da Primavera.
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-            {WINTER_S1_OFFICIAL.map(player => {
-              const medal =
-                player.rank === 1
-                  ? '🥇 1º Lugar'
-                  : player.rank === 2
-                  ? '🥈 2º Lugar'
-                  : '🥉 3º Lugar';
-              const cardBorder =
-                player.rank === 1
-                  ? 'border-amber-500/70 bg-gradient-to-b from-amber-950/30 to-stone-900'
-                  : player.rank === 2
-                  ? 'border-blue-500/40 bg-stone-900'
-                  : 'border-stone-800 bg-stone-900';
-
-              return (
-                <div
-                  key={player.playerId}
-                  className={`p-5 rounded-2xl border ${cardBorder} shadow-sm space-y-3`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-300 uppercase tracking-wide">
-                      {medal}
-                    </span>
-                    <div
-                      className="w-4 h-4 rounded-full border border-stone-400 shadow-sm"
-                      style={{ backgroundColor: player.colorHex }}
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-xl text-stone-100 font-serif">
-                      {player.playerName}
-                    </h3>
-                    <span className="text-xs text-stone-400">{player.description}</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-stone-800/80 text-center">
-                    <div className="bg-stone-950/80 p-2.5 rounded-xl border border-stone-800">
-                      <span className="text-2xl font-bold font-mono text-amber-400 block tabular-nums">
-                        {player.wins}
-                      </span>
-                      <span className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">
-                        Vitórias
-                      </span>
-                    </div>
-
-                    <div className="bg-stone-950/80 p-2.5 rounded-xl border border-stone-800">
-                      <span className="text-2xl font-bold font-mono text-emerald-400 block tabular-nums">
-                        {player.annualPoints}
-                      </span>
-                      <span className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">
-                        Pts Anuais
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+      {/* Informative Banner for Inverno */}
+      {selectedSeason === 'Inverno' && (
+        <div className="p-3.5 bg-blue-950/30 border border-blue-900/60 rounded-2xl flex items-start gap-3">
+          <ShieldCheck size={18} className="text-blue-400 shrink-0 mt-0.5" />
+          <div className="text-xs text-blue-200 leading-relaxed">
+            <strong>Edição Winter S1 (Inverno 2026) — 15 partidas no Catan Jogo Base:</strong><br />
+            Todas as 15 partidas oficiais foram disputadas no jogo clássico (meta de 10 PV). Conforme regulamento histórico, cada vencedor pontuou 10 PV (+2 bônus de vitória = 12.0 PE) e todos os demais participantes pontuaram 9 PV (9.0 PE).
           </div>
         </div>
-      ) : (
-        /* DYNAMIC LEADERBOARD FOR PRIMAVERA AND ONWARDS */
-        <div className="space-y-4">
+      )}
+
+      {/* DYNAMIC LEADERBOARD */}
+      <div className="space-y-4">
           {/* Empty state invitation for specific season */}
           {selectedSeason !== 'all' && seasonMatches.length === 0 ? (
             <div className="bg-stone-900 border border-stone-800 rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-sm">
@@ -381,7 +319,6 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({ matches, onOpenM
             </>
           )}
         </div>
-      )}
     </div>
   );
 };

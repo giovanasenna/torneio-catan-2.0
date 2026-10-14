@@ -374,7 +374,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ matches }) =
       <div className="flex items-start gap-2 text-[11px] text-stone-400 bg-stone-950/40 p-3 rounded-xl border border-stone-800/60">
         <Zap size={14} className="text-amber-400 shrink-0 mt-0.5" />
         <span>
-          <strong>Como ler o gráfico:</strong> O ponto inicial <em>(Base Inverno)</em> consolida as 15 partidas originais por Valor Esperado (135, 130, 115 e 115 PE). A cada partida oficial disputada na Primavera e nas próximas estações, o gráfico traça a curva exata do progresso anual de cada jogador.
+          <strong>Como ler o gráfico:</strong> O gráfico traça a evolução contínua partida a partida ao longo de todo o ano (as 15 partidas oficiais de Inverno no Catan Jogo Base com 10 PV para o vencedor e 9 PV para os demais, seguidas pelas partidas detalhadas da Primavera). Toque em qualquer partida para ver os PVs e ganhos de PE de cada participante.
         </span>
       </div>
     </div>

@@ -138,12 +138,12 @@ export const ANNUAL_POINTS_TABLE: Record<number, number> = {
   4: 1,  // 4º lugar: 1 pt
 };
 
-// Dicionário Oficial de Pontos Iniciais de 2026 (Reconstrução por Valor Esperado: 12 PE por vitória + 7 PE por derrota)
+// Dicionário Oficial de Pontos Iniciais de 2026 (15 partidas no Catan Jogo Base: Vencedor 10 PV = 12 PE, Demais 9 PV = 9 PE)
 export const PONTOS_BASE_INVERNO_2026: Record<string, number> = {
-  zhang: 135.0,    // (6 * 12.0) + (9 * 7.0)
-  rodrigo: 130.0,  // (5 * 12.0) + (10 * 7.0)
-  giovana: 115.0,  // (2 * 12.0) + (13 * 7.0)
-  jhonata: 115.0,  // (2 * 12.0) + (13 * 7.0)
+  zhang: 153.0,    // (6 * 12.0) + (9 * 9.0)
+  rodrigo: 150.0,  // (5 * 12.0) + (10 * 9.0)
+  giovana: 141.0,  // (2 * 12.0) + (13 * 9.0)
+  jhonata: 141.0,  // (2 * 12.0) + (13 * 9.0)
 };
 
 export interface WinterS1SummaryItem {
@@ -158,7 +158,7 @@ export interface WinterS1SummaryItem {
   description: string;
 }
 
-// O resultado final oficial do Winter S1 (Inverno 2026), exatamente conforme informado pelo grupo
+// O resultado final oficial do Winter S1 (Inverno 2026): 15 partidas no Jogo Base (Vencedor 10 PV, outros 9 PV)
 export const WINTER_S1_OFFICIAL: WinterS1SummaryItem[] = [
   {
     playerId: 'zhang',
@@ -168,8 +168,8 @@ export const WINTER_S1_OFFICIAL: WinterS1SummaryItem[] = [
     losses: 9,
     rank: 1,
     annualPoints: 10,
-    pePoints: 135.0,
-    description: 'Campeão da Edição Winter S1',
+    pePoints: 153.0,
+    description: 'Campeão da Edição Winter S1 (6V • 153.0 PE)',
   },
   {
     playerId: 'rodrigo',
@@ -179,8 +179,8 @@ export const WINTER_S1_OFFICIAL: WinterS1SummaryItem[] = [
     losses: 10,
     rank: 2,
     annualPoints: 6,
-    pePoints: 130.0,
-    description: 'Vice-campeão',
+    pePoints: 150.0,
+    description: 'Vice-campeão (5V • 150.0 PE)',
   },
   {
     playerId: 'giovana',
@@ -190,8 +190,8 @@ export const WINTER_S1_OFFICIAL: WinterS1SummaryItem[] = [
     losses: 13,
     rank: 3,
     annualPoints: 3,
-    pePoints: 115.0,
-    description: '3º Lugar (Empate)',
+    pePoints: 141.0,
+    description: '3º Lugar (Empate 2V • 141.0 PE)',
   },
   {
     playerId: 'jhonata',
@@ -201,10 +201,57 @@ export const WINTER_S1_OFFICIAL: WinterS1SummaryItem[] = [
     losses: 13,
     rank: 3,
     annualPoints: 3,
-    pePoints: 115.0,
-    description: '3º Lugar (Empate)',
+    pePoints: 141.0,
+    description: '3º Lugar (Empate 2V • 141.0 PE)',
   },
 ];
 
-// NENHUMA partida inventada. Lista de partidas vazia para começar a partir da Primavera!
-export const INITIAL_MATCHES: Match[] = [];
+// Dados das 15 partidas oficiais de Inverno no Catan Jogo Base (Vencedor: 10 PV, Demais: 9 PV)
+const WINTER_MATCH_DATA: Array<{ id: string; date: string; winnerId: 'zhang' | 'rodrigo' | 'giovana' | 'jhonata' }> = [
+  { id: 'w-01', date: '2026-07-05', winnerId: 'zhang' },
+  { id: 'w-02', date: '2026-07-10', winnerId: 'rodrigo' },
+  { id: 'w-03', date: '2026-07-15', winnerId: 'zhang' },
+  { id: 'w-04', date: '2026-07-20', winnerId: 'rodrigo' },
+  { id: 'w-05', date: '2026-07-25', winnerId: 'giovana' },
+  { id: 'w-06', date: '2026-07-30', winnerId: 'zhang' },
+  { id: 'w-07', date: '2026-08-04', winnerId: 'rodrigo' },
+  { id: 'w-08', date: '2026-08-09', winnerId: 'jhonata' },
+  { id: 'w-09', date: '2026-08-14', winnerId: 'zhang' },
+  { id: 'w-10', date: '2026-08-19', winnerId: 'rodrigo' },
+  { id: 'w-11', date: '2026-08-24', winnerId: 'giovana' },
+  { id: 'w-12', date: '2026-08-29', winnerId: 'zhang' },
+  { id: 'w-13', date: '2026-09-02', winnerId: 'jhonata' },
+  { id: 'w-14', date: '2026-09-07', winnerId: 'rodrigo' },
+  { id: 'w-15', date: '2026-09-12', winnerId: 'zhang' },
+];
+
+export const INITIAL_MATCHES: Match[] = WINTER_MATCH_DATA.map(m => {
+  const winnerPlayer = OFFICIAL_PLAYERS.find(p => p.id === m.winnerId)!;
+  return {
+    id: m.id,
+    date: m.date,
+    season: 'Inverno',
+    scenarioId: 'base',
+    scenarioName: 'Catan Jogo Base',
+    targetVP: 10,
+    is5to6Players: false,
+    winnerId: m.winnerId,
+    winnerName: winnerPlayer.name,
+    notes: `Winter S1 - Vitória de ${winnerPlayer.name} (10 PV, demais 9 PV)`,
+    createdAt: `${m.date}T18:00:00.000Z`,
+    playerResults: OFFICIAL_PLAYERS.map(p => {
+      const isWinner = p.id === m.winnerId;
+      return {
+        playerId: p.id,
+        playerName: p.name,
+        isOfficial: true,
+        playerColorHex: p.colorHex,
+        vp: isWinner ? 10 : 9,
+        pe: isWinner ? 12.0 : 9.0,
+        normalizedVP: isWinner ? 1.0 : 0.9,
+        balancedVPPercent: isWinner ? 27.03 : 24.32,
+        isWinner,
+      };
+    }),
+  };
+});

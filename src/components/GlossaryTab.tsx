@@ -107,19 +107,16 @@ export const GlossaryTab: React.FC = () => {
         </div>
 
         <div className="p-4 bg-stone-950/70 border border-stone-800 rounded-xl space-y-2 text-xs sm:text-sm text-stone-300">
-          <strong className="text-amber-300 block">Por que não utilizamos pontuação arbitrária (ex: 10, 6, 2, 2 pontos)?</strong>
+          <strong className="text-amber-300 block">Regulamento Oficial do Inverno (Catan Jogo Base):</strong>
           <p className="text-xs text-stone-400 leading-relaxed">
-            Se o Inverno concedesse apenas 10 ou 6 pontos fixos, todo o esforço de 15 partidas equivaleria a apenas 1 partida na Primavera (que distribui até 12 PE por vitória). O Inverno seria praticamente irrelevante no placar final do ano.
-          </p>
-          <p className="text-xs text-stone-400 leading-relaxed">
-            Para respeitar o histórico de 15 jogos disputados, aplicamos a <strong>Reconstrução por Valor Esperado</strong>:
+            Como não havia registro lance a lance dos PVs do Inverno, foi convencionado oficialmente pelo grupo: <strong>todas as 15 partidas foram no Catan Jogo Base (meta 10 PV)</strong>, onde o <strong>vencedor cravou 10 PV</strong> (+2.0 bônus = 12.0 PE) e <strong>todos os demais participantes cravaram 9 PV</strong> (9.0 PE).
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs font-mono">
             <div className="bg-stone-900 p-2 rounded-lg border border-stone-800">
-              🏆 <strong>Vitória no Inverno:</strong> 12.0 PE (teto padrão)
+              🏆 <strong>Vencedor da Partida:</strong> 10 PV (10/10 × 10 + 2 = 12.0 PE)
             </div>
             <div className="bg-stone-900 p-2 rounded-lg border border-stone-800">
-              ⚔️ <strong>Derrota Disputada:</strong> 7.0 PE (média de mesa de 70%)
+              ⚔️ <strong>Demais Participantes:</strong> 9 PV (9/10 × 10 = 9.0 PE)
             </div>
           </div>
         </div>
@@ -131,9 +128,9 @@ export const GlossaryTab: React.FC = () => {
               <tr className="border-b border-stone-800 bg-stone-950/70 text-stone-400 uppercase tracking-wider font-semibold">
                 <th className="py-2.5 px-3">Colocação</th>
                 <th className="py-2.5 px-3">Jogador</th>
-                <th className="py-2.5 px-3">Vitórias (12 PE)</th>
-                <th className="py-2.5 px-3">Derrotas (7 PE)</th>
-                <th className="py-2.5 px-3 font-mono text-amber-300">Pontos Base Inverno 2026</th>
+                <th className="py-2.5 px-3">Vitórias (10 PV • 12 PE)</th>
+                <th className="py-2.5 px-3">Derrotas (9 PV • 9 PE)</th>
+                <th className="py-2.5 px-3 font-mono text-amber-300">Total Inverno 2026</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-800/60 text-stone-200">
@@ -141,29 +138,29 @@ export const GlossaryTab: React.FC = () => {
                 <td className="py-2.5 px-3 font-bold text-amber-400">🥇 1º Lugar</td>
                 <td className="py-2.5 px-3 font-semibold">Zhang</td>
                 <td className="py-2.5 px-3 font-mono">6 × 12.0 = 72.0 PE</td>
-                <td className="py-2.5 px-3 font-mono">9 × 7.0 = 63.0 PE</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-amber-400">135.0 PE</td>
+                <td className="py-2.5 px-3 font-mono">9 × 9.0 = 81.0 PE</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-amber-400">153.0 PE (141 PV)</td>
               </tr>
               <tr>
                 <td className="py-2.5 px-3 font-bold text-blue-400">🥈 2º Lugar</td>
                 <td className="py-2.5 px-3 font-semibold">Rodrigo</td>
                 <td className="py-2.5 px-3 font-mono">5 × 12.0 = 60.0 PE</td>
-                <td className="py-2.5 px-3 font-mono">10 × 7.0 = 70.0 PE</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-blue-400">130.0 PE</td>
+                <td className="py-2.5 px-3 font-mono">10 × 9.0 = 90.0 PE</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-blue-400">150.0 PE (140 PV)</td>
               </tr>
               <tr>
                 <td className="py-2.5 px-3 font-bold text-red-400">🥉 3º Lugar</td>
                 <td className="py-2.5 px-3 font-semibold">Gina (Giovana)</td>
                 <td className="py-2.5 px-3 font-mono">2 × 12.0 = 24.0 PE</td>
-                <td className="py-2.5 px-3 font-mono">13 × 7.0 = 91.0 PE</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-red-400">115.0 PE</td>
+                <td className="py-2.5 px-3 font-mono">13 × 9.0 = 117.0 PE</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-red-400">141.0 PE (137 PV)</td>
               </tr>
               <tr>
                 <td className="py-2.5 px-3 font-bold text-slate-300">🥉 3º Lugar</td>
                 <td className="py-2.5 px-3 font-semibold">Jhonata</td>
                 <td className="py-2.5 px-3 font-mono">2 × 12.0 = 24.0 PE</td>
-                <td className="py-2.5 px-3 font-mono">13 × 7.0 = 91.0 PE</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-slate-300">115.0 PE</td>
+                <td className="py-2.5 px-3 font-mono">13 × 9.0 = 117.0 PE</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-slate-300">141.0 PE (137 PV)</td>
               </tr>
             </tbody>
           </table>
@@ -172,7 +169,7 @@ export const GlossaryTab: React.FC = () => {
         <div className="p-3 bg-emerald-950/30 border border-emerald-900/50 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
           <Sparkles size={16} className="shrink-0 text-emerald-400" />
           <span>
-            <strong>Circuito Totalmente Aberto:</strong> A diferença entre o 1º colocado (135 PE) e o 3º colocado (115 PE) é de apenas <strong>20 PE</strong>, o que equivale a 3 a 4 partidas de recuperação na Primavera!
+            <strong>Circuito Equilibrado:</strong> A diferença entre o 1º colocado (153 PE) e os 3º colocados (141 PE) é de apenas <strong>12 PE</strong>, permitindo disputas acirradas e reviravoltas na Primavera!
           </span>
         </div>
       </div>
